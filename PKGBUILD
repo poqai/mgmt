@@ -1,5 +1,6 @@
 # $Id$
-# Maintainer: Joe Julian
+# Maintainer: Philipp Marmet
+# Contributor: Joe Julian
 
 pkgname=mgmt
 pkgver=0.0.19
@@ -10,7 +11,7 @@ arch=('x86_64' 'i686' 'armv6h' 'armv7h')
 pkggopath='github.com/purpleidea/mgmt'
 url="https://${pkggopath}"
 license=('GPL3')
-makedepends=('augeas' 'go' 'go-md2man' 'go-tools' 'libpcap' 'libvirt' 'mercurial' 'ruby')
+makedepends=('augeas' 'go' 'go-md2man' 'go-tools' 'libpcap' 'libvirt')
 depends=('augeas' 'libvirt')
 # don't strip binaries! A sha1 is used to check binary consistency.
 options=('!strip')
@@ -35,11 +36,7 @@ prepare() {
     export PATH=${GOPATH}/bin:${PATH}
     cd "${srcdir}/src/${pkggopath}"
     msg2 'installing go dependencies'
-    go get github.com/blynn/nex
-    # This build depends on the non-canonical go-bindata
-    go get github.com/tmthrgd/go-bindata/go-bindata
-    make bindata
-    make deps
+    go install github.com/blynn/nex@latest
 }
 
 build() {
