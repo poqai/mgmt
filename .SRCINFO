@@ -1,7 +1,7 @@
 pkgbase = mgmt
 	pkgdesc = Next generation config management.
 	pkgver = 0.0.26
-	pkgrel = 1
+	pkgrel = 2
 	epoch = 1
 	url = https://github.com/purpleidea/mgmt
 	arch = x86_64
@@ -15,13 +15,15 @@ pkgbase = mgmt
 	makedepends = go-tools
 	makedepends = libpcap
 	makedepends = libvirt
+	makedepends = rubygems
+	makedepends = ragel
 	depends = augeas
 	depends = libvirt
 	options = !strip
 	backup = etc/mgmt/mgmt.conf
-	source = git+https://github.com/purpleidea/mgmt.git
+	source = mgmt-0.0.26.tar.gz::https://github.com/purpleidea/mgmt/archive/refs/tags/0.0.26.tar.gz
 	source = mgmt.service
-	sha1sums = SKIP
-	sha1sums = ef0ecdb4d1c4441b884c7084b93806b52ec567c6
+	sha256sums = 19d4cfb33c7c13b26b8088baac2d91471ac6839226d211b9cec85ddc575da392
+	sha256sums = eeb4174a8556161b94f62808b4453ef91574797070ada53ffb90cb013aff9799
 
 pkgname = mgmt
