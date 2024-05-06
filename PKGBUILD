@@ -3,7 +3,7 @@
 # Contributor: Joe Julian
 
 pkgname=mgmt
-pkgver=0.0.19
+pkgver=0.0.26
 pkgrel=1
 epoch=1
 pkgdesc='Next generation config management.'
