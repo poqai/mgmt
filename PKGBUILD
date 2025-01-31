@@ -3,8 +3,8 @@
 # Contributor: Joe Julian
 
 pkgname=mgmt
-pkgver=0.0.26
-pkgrel=2
+pkgver=0.0.27
+pkgrel=0
 epoch=1
 pkgdesc='Next generation config management.'
 arch=('x86_64' 'i686' 'armv6h' 'armv7h')
@@ -18,8 +18,8 @@ options=('!strip')
 backup=("etc/${pkgname}/${pkgname}.conf")
 
 source=("${pkgname}-${pkgver}.tar.gz"::"${url}/archive/refs/tags/${pkgver}.tar.gz"
-        'mgmt.service')
-sha256sums=('19d4cfb33c7c13b26b8088baac2d91471ac6839226d211b9cec85ddc575da392'
+        "mgmt.service")
+sha256sums=('47f9732161e320e1fcf61e48f843a66d8111ba5297bd221c8784bbf0853ae107'
             'eeb4174a8556161b94f62808b4453ef91574797070ada53ffb90cb013aff9799')
 
 prepare() {
