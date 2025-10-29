@@ -3,7 +3,7 @@
 # Contributor: Joe Julian
 
 pkgname=mgmt
-pkgver=1.0.0
+pkgver=1.0.1
 pkgrel=0
 epoch=1
 pkgdesc='Next generation config management.'
@@ -19,7 +19,7 @@ backup=("etc/${pkgname}/${pkgname}.conf")
 
 source=("${pkgname}-${pkgver}.tar.gz"::"${url}/archive/refs/tags/${pkgver}.tar.gz"
   "mgmt.service")
-sha256sums=('7cdffc7fbe110690ef427e5c2c0e1df4bf08e7ef6da0b3b68ed7fd755f201deb'
+sha256sums=('1b0c8b6efc2c3064955d8dd3cadc6b11b9195ec07e33f0bf5e115a0e113494d6'
   'eeb4174a8556161b94f62808b4453ef91574797070ada53ffb90cb013aff9799')
 
 prepare() {
@@ -59,6 +59,6 @@ package() {
 
   cd "${srcdir}/${pkgname}-${pkgver}"
   install -Dm755 "${pkgname}" "${pkgdir}/usr/bin/${pkgname}"
-  install -Dm644 "misc/bashrc.sh" "${pkgdir}/usr/share/bash-completion/completions/${pkgname}"
-  install -Dm644 "misc/example.conf" "${pkgdir}/etc/${pkgname}/${pkgname}.conf"
+  install -Dm644 "${srcdir}/misc/bashrc.sh" "${pkgdir}/usr/share/bash-completion/completions/${pkgname}"
+  install -Dm644 "${srcdir}/misc/example.conf" "${pkgdir}/etc/${pkgname}/${pkgname}.conf"
 }
