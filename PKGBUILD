@@ -4,7 +4,7 @@
 
 pkgname=mgmt
 pkgver=1.0.1
-pkgrel=0
+pkgrel=1
 epoch=1
 pkgdesc='Next generation config management.'
 arch=('x86_64' 'i686' 'armv6h' 'armv7h')
@@ -13,6 +13,7 @@ url="https://${pkggopath}"
 license=('GPL3')
 makedepends=('augeas' 'go' 'go-md2man' 'go-tools' 'libpcap' 'libvirt' 'rubygems' 'ragel')
 depends=('augeas' 'libvirt')
+conflicts=('mgmt-bin')
 # don't strip binaries! A sha1 is used to check binary consistency.
 options=('!strip')
 backup=("etc/${pkgname}/${pkgname}.conf")
@@ -59,6 +60,6 @@ package() {
 
   cd "${srcdir}/${pkgname}-${pkgver}"
   install -Dm755 "${pkgname}" "${pkgdir}/usr/bin/${pkgname}"
-  install -Dm644 "${srcdir}/misc/bashrc.sh" "${pkgdir}/usr/share/bash-completion/completions/${pkgname}"
-  install -Dm644 "${srcdir}/misc/example.conf" "${pkgdir}/etc/${pkgname}/${pkgname}.conf"
+  install -Dm644 "misc/bashrc.sh" "${pkgdir}/usr/share/bash-completion/completions/${pkgname}"
+  install -Dm644 "misc/example.conf" "${pkgdir}/etc/${pkgname}/${pkgname}.conf"
 }
