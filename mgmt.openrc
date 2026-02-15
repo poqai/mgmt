@@ -1,0 +1,21 @@
+#!/usr/bin/openrc-run
+# Copyright 1999-2007 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: /var/cvsroot/gentoo-x86/net-misc/chrony/files/chronyd.rc,v 1.8 2007/03/22 14:32:09 tove Exp $
+
+command="/usr/bin/mgmt"
+command_args="run ${OPTS}"
+description="mgmt configuration management daemon"
+pidfile="/run/mgmt/mgmt.pid"
+
+output_log="/var/log/mgmt.log"
+error_log="/var/log/mgmt.log"
+
+depend() {
+	need net
+	after firewall
+	provide mgmt
+	use dns
+}
+
+

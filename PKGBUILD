@@ -19,9 +19,9 @@ options=('!strip')
 backup=("etc/${pkgname}/${pkgname}.conf")
 
 source=("${pkgname}-${pkgver}.tar.gz"::"${url}/archive/refs/tags/${pkgver}.tar.gz"
-  "mgmt.service")
+        "mgmt.openrc")
 sha256sums=('1b0c8b6efc2c3064955d8dd3cadc6b11b9195ec07e33f0bf5e115a0e113494d6'
-  'eeb4174a8556161b94f62808b4453ef91574797070ada53ffb90cb013aff9799')
+            'de8f652651815a4aaa53c2cf2bdecc99f2ff833d15b8b59ba9da90c97d40ec58')
 
 prepare() {
   # extract tarball to path expected by go
@@ -56,7 +56,7 @@ build() {
 
 package() {
   msg2 'installing files'
-  install -Dm644 "mgmt.service" "${pkgdir}/usr/lib/systemd/system/mgmt.service"
+  install -Dm755 "mgmt.openrc" "${pkgdir}/etc/init.d/mgmt"
 
   cd "${srcdir}/${pkgname}-${pkgver}"
   install -Dm755 "${pkgname}" "${pkgdir}/usr/bin/${pkgname}"
