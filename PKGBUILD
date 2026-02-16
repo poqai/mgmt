@@ -4,8 +4,7 @@
 
 pkgname=mgmt
 pkgver=1.0.1
-pkgrel=1
-epoch=1
+pkgrel=2
 pkgdesc='Next generation config management.'
 arch=('x86_64' 'i686' 'armv6h' 'armv7h')
 url="https://github.com/purpleidea/mgmt"
