@@ -4,7 +4,7 @@
 
 pkgname=mgmt
 pkgver=1.0.1
-pkgrel=3
+pkgrel=4
 pkgdesc='Next generation config management.'
 arch=('x86_64' 'i686' 'armv6h' 'armv7h')
 url="https://github.com/purpleidea/mgmt"
@@ -19,37 +19,51 @@ sha256sums=('1b0c8b6efc2c3064955d8dd3cadc6b11b9195ec07e33f0bf5e115a0e113494d6'
             'bc26455ddbf5d21be7598170011d69b4c1cd4529dd4b5ed1ca107f97941d261d')
 
 prepare() {
-  cd "${pkgname}-${pkgver}"
-  # Redirect caches to srcdir so they are cleaned up automatically,
-  # but don't set GOPATH which affects how paths are stored in binaries.
+  # 1. Setup local caches to keep the build environment isolated
   export GOMODCACHE="${srcdir}/modcache"
   export GOCACHE="${srcdir}/go-build"
 
-  # Download dependencies to the local cache
+  # 2. Setup a local bin for the generators
+  export GOBIN="${srcdir}/bin"
+  export PATH="${GOBIN}:${PATH}"
+  mkdir -p "${GOBIN}"
+
+  # 3. Download app dependencies to the local cache
+  cd "${pkgname}-${pkgver}"
   go mod download -modcacherw
+
+  # 4. Install the generators into our local bin
+  # We use -buildvcs=false to prevent the CI 'exit status 128' error here too
+  go install github.com/blynn/nex@latest
+  go install golang.org/x/tools/cmd/goyacc@latest      # formerly `go tool yacc`
+  go install golang.org/x/tools/cmd/stringer@latest    # for automatic stringer-ing
+  go install golang.org/x/lint/golint@latest           # for `golint`-ing
+  go install golang.org/x/tools/cmd/goimports@latest   # for fmt
+  go install github.com/dvyukov/go-fuzz/go-fuzz@latest # for fuzzing the mcl lang bits
 }
 
+
 build() {
+  # 5. Setup local caches and paths
   export GOMODCACHE="${srcdir}/modcache"
   export GOCACHE="${srcdir}/go-build"
+  export PATH="${srcdir}/bin:${PATH}"
 
-  # Arch-idiomatic flags that are safe for BOTH Linux and WASM:
-  # -trimpath: Fixes the $srcdir warning
-  # -buildvcs=false: Fixes the exit status 128 CI error
+  # 6. Standard Arch flags (safe for both Linux and WASM)
+  # -trimpath: removes the $srcdir references
+  # -buildvcs=false: we don't need the binary stamped with vcs revision
   export GOFLAGS="-trimpath -buildvcs=false -mod=readonly"
 
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-  # Use the Makefile for everything.
-  # We pass MGMT_NOGOLANGRACE=true to keep the binary clean.
-  # We do NOT add -buildmode=pie here to ensure the WASM UI builds correctly.
+  # 7. Use the Makefile
+  # MGMT_NOGOLANGRACE=true: Removes the hidden absolute paths in race-detector symbols
   make VERSION="${pkgver}" \
        SVERSION="${pkgver}" \
        PROGRAM="${pkgname}" \
        MGMT_NOGOLANGRACE=true
 
-  # Clean up the module cache so it's not included in the package
-  rm -rf "${GOMODCACHE}"
+  sudo rm -rf "${GOMODCACHE}" "${srcdir}/bin"
 }
 
 package() {
