@@ -8,8 +8,7 @@ pkgrel=1
 epoch=1
 pkgdesc='Next generation config management.'
 arch=('x86_64' 'i686' 'armv6h' 'armv7h')
-pkggopath='github.com/purpleidea/mgmt'
-url="https://${pkggopath}"
+url="https://github.com/purpleidea/mgmt"
 license=('GPL3')
 makedepends=('augeas' 'go' 'go-md2man' 'go-tools' 'libpcap' 'libvirt' 'rubygems' 'ragel')
 depends=('augeas' 'libvirt')
@@ -21,43 +20,31 @@ backup=("etc/${pkgname}/${pkgname}.conf")
 source=("${pkgname}-${pkgver}.tar.gz"::"${url}/archive/refs/tags/${pkgver}.tar.gz"
         "mgmt.openrc")
 sha256sums=('1b0c8b6efc2c3064955d8dd3cadc6b11b9195ec07e33f0bf5e115a0e113494d6'
-            'de8f652651815a4aaa53c2cf2bdecc99f2ff833d15b8b59ba9da90c97d40ec58')
+            'bc26455ddbf5d21be7598170011d69b4c1cd4529dd4b5ed1ca107f97941d261d')
 
 prepare() {
-  # extract tarball to path expected by go
-  mkdir -p "${srcdir}/src/${pkggopath}"
-  cd "${srcdir}/${pkgname}-${pkgver}"
-
-  git submodule --quiet update --init --recursive
-  git archive --prefix="${pkggopath}/" --format="tar" HEAD | tar xf - -C "${srcdir}/src"
-  git submodule foreach 'git archive --prefix="${path}/" --format="tar" HEAD | tar xvf - -C "'${srcdir}'/src/'${pkggopath}'"'
-
-  # fetch dependencies
-  export GOPATH="${srcdir}"
-  export PATH=${GOPATH}/bin:${PATH}
-  cd "${srcdir}/src/${pkggopath}"
-  msg2 'installing go dependencies'
+  export GOPATH="${srcdir}/${pkgname}-${pkgver}/.go"
+  mkdir -p "${GOPATH}"
   go install github.com/blynn/nex@latest
   go install golang.org/x/tools/cmd/goyacc@latest      # formerly `go tool yacc`
   go install golang.org/x/tools/cmd/stringer@latest    # for automatic stringer-ing
   go install golang.org/x/lint/golint@latest           # for `golint`-ing
   go install golang.org/x/tools/cmd/goimports@latest   # for fmt
   go install github.com/dvyukov/go-fuzz/go-fuzz@latest # for fuzzing the mcl lang bits
-
 }
 
 build() {
-  export GOPATH="${srcdir}"
+  export GOPATH="${srcdir}/${pkgname}-${pkgver}/.go"
   export PATH=${GOPATH}/bin:${PATH}:/usr/lib/go/pkg/tool/linux_amd64
   cd "${srcdir}/${pkgname}-${pkgver}"
   go mod tidy
   make VERSION="${pkgver}" SVERSION="${pkgver}" PROGRAM="${pkgname}"
+  sudo rm -rf "${GOPATH}"
 }
 
 package() {
-  msg2 'installing files'
+  install -d "${pkgdir}/run/${pkgname}"
   install -Dm755 "mgmt.openrc" "${pkgdir}/etc/init.d/mgmt"
-
   cd "${srcdir}/${pkgname}-${pkgver}"
   install -Dm755 "${pkgname}" "${pkgdir}/usr/bin/${pkgname}"
   install -Dm644 "misc/bashrc.sh" "${pkgdir}/usr/share/bash-completion/completions/${pkgname}"
